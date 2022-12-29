@@ -5,7 +5,7 @@ export default class Vehicle {
   protected model: string;
   protected year: number;
   protected color: string;
-  protected status?: boolean | undefined;
+  protected status?: boolean;
   protected buyValue: number;
 
   constructor(vehicle: IVehicle) {
