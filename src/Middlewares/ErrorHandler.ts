@@ -1,19 +1,12 @@
 import { ErrorRequestHandler } from 'express';
-import IErrorCodes from '../Interfaces/IErrorCodes';
+import HttpException from '../Validations/HttpException';
 
 const errorHandler: ErrorRequestHandler = async (err, _req, res, next) => {
-  const { name, message } = err;
-  console.log(`name: ${name}`);
+  const { status, message } = err as HttpException;
+  console.log(`name: ${status}`);
   console.log(`message: ${message}`);
-  const errors: IErrorCodes = {
-    notFoundError: 404,
-    validationError: 400,
-    unauthorized: 401,
-    unprocessableEntity: 422,
-  };
 
-  const status: number = errors[name] || 500;
-  res.status(status).json({ message });
+  res.status(status || 500).json({ message });
 
   next();
 };

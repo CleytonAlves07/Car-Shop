@@ -2,7 +2,7 @@ import { isValidObjectId } from 'mongoose';
 import Car from '../Domains/Car';
 import ICar from '../Interfaces/ICar';
 import CarODM from '../Models/CarODM';
-import HttpException from './Validations/HttpException';
+import HttpException from '../Validations/HttpException';
 
 export default class CarService {
   private createCarDomain(car: ICar | null): Car | null {
@@ -27,10 +27,10 @@ export default class CarService {
   }
 
   public async findById(id: string) {
-    if (!isValidObjectId(id)) throw new HttpException('unprocessableEntity', 'Invalid mongo id');
+    if (!isValidObjectId(id)) throw new HttpException(422, 'Invalid mongo id');
     const carODM = new CarODM();
     const carById = await carODM.findById(id);
-    if (!carById) throw new HttpException('notFoundError', 'Car not found');
+    if (!carById) throw new HttpException(404, 'Car not found');
     return this.createCarDomain(carById);
   }
 }
