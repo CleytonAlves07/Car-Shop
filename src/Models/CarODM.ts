@@ -1,4 +1,4 @@
-import { Model, models, model, Schema } from 'mongoose';
+import { Model, models, model, Schema, UpdateQuery } from 'mongoose';
 import ICar from '../Interfaces/ICar';
 
 export default class CarODM {
@@ -28,5 +28,14 @@ export default class CarODM {
 
   public async findById(id: string): Promise<ICar | null> {
     return this.model.findById(id);
+  }
+
+  public async update(_id: string, obj: Partial<ICar>):
+  Promise<ICar | null> {
+    return this.model.findByIdAndUpdate(
+      { _id },
+      { ...obj } as UpdateQuery<ICar>,
+      { new: true },
+    );
   }
 }

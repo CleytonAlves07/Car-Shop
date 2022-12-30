@@ -41,7 +41,7 @@ describe('Testando a rota /cars e suas funções', function () {
   );
 
   it(
-    'Produto não encontrado ao tentar buscar um carro cadastrado pelo id - function getByIId',
+    'Carro não encontrado ao tentar buscar por um id não cadastrado - function getByIId',
     async function () {
       const idNonExistent = '99ace3ad5499331d2e826357';
       sinon.stub(Model, 'findById').resolves();
@@ -65,6 +65,48 @@ describe('Testando a rota /cars e suas funções', function () {
         expect((error as HttpException).message).to.be.deep.equal('Invalid mongo id');
         expect((error as HttpException).status).to.be.deep.equal(422);
       }
+    },
+  );
+
+  it(
+    'Carro não encontrado ao tentar buscar por um id não cadastrado - function update',
+    async function () {
+      const idNonExistent = '99ace3ad5499331d2e826357';
+      sinon.stub(Model, 'findByIdAndUpdate').resolves();
+      sinon.stub(Model, 'findById').resolves();
+      try {
+        await carService.updateCar(idNonExistent, carOutput);
+      } catch (error) {
+        expect((error as HttpException).message).to.be.deep.equal('Car not found');
+        expect((error as HttpException).status).to.be.deep.equal(404);
+      }
+    },
+  );
+  
+  it(
+    'Falha ao tentar buscar um carro com um id inválido - function update',
+    async function () {
+      const invalidID = 'invalidID';
+      sinon.stub(Model, 'findByIdAndUpdate').resolves();
+      sinon.stub(Model, 'findById').resolves();
+      try {
+        await carService.updateCar(invalidID, carOutput);
+      } catch (error) {
+        expect((error as HttpException).message).to.be.deep.equal('Invalid mongo id');
+        expect((error as HttpException).status).to.be.deep.equal(422);
+      }
+    },
+  );
+
+  it(
+    'Sucesso ao tentar atualizar um carro cadastrado - function update',
+    async function () {
+      const id = '63ace3ad5499331d2e826451';
+      sinon.stub(Model, 'findByIdAndUpdate').resolves(carOutput);
+      sinon.stub(Model, 'findById').resolves(carOutput);
+      const update = await carService.updateCar(id, carInput);
+
+      expect(update).to.be.deep.equal(carOutput);
     },
   );
 
